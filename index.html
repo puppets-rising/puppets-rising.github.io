@@ -32,16 +32,9 @@
     white-space: nowrap;
     line-height: 0.85;
     text-align: center;
-    /* Scale relative to viewport width so it fills the window */
-    font-size: 22vw;
-  }
-
-  /* On very tall/narrow windows, cap by height instead so it never overflows vertically */
-  @media (min-aspect-ratio: 1/1) {
-    h1 { font-size: 22vw; }
-  }
-  @media (max-aspect-ratio: 1/1) {
-    h1 { font-size: 30vh; }
+    /* Scale by whichever dimension is more constraining, so it fills
+       the window without overflowing in either orientation */
+    font-size: min(22vw, 30vh);
   }
 </style>
 </head>
