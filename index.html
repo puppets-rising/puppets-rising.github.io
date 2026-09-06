@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUPPETS RISING</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  h1 {
+    font-family: 'Londrina Shadow', sans-serif;
+    color: #000000;
+    margin: 0;
+    padding: 0 1vw;
+    white-space: nowrap;
+    line-height: 0.85;
+    text-align: center;
+    /* Scale relative to viewport width so it fills the window */
+    font-size: 22vw;
+  }
+
+  /* On very tall/narrow windows, cap by height instead so it never overflows vertically */
+  @media (min-aspect-ratio: 1/1) {
+    h1 { font-size: 22vw; }
+  }
+  @media (max-aspect-ratio: 1/1) {
+    h1 { font-size: 30vh; }
+  }
+</style>
+</head>
+<body>
+  <h1>PUPPETS<br>RISING</h1>
+</body>
+</html>
