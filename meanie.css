@@ -1,0 +1,337 @@
+ body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            /* accounts for mobile browser toolbars */
+            display: flex;
+            background: linear-gradient(blue, purple);
+        }
+
+        .center { text-align:center; margin:auto;}
+
+
+        .meanie-wrap {
+            width: 50%;
+            margin: 0 auto;
+        }
+        @media screen and (max-width: 768px) {
+               .meanie-wrap { border:1px solid red;  width: 100%; }
+        }
+
+        .meanie,
+        .meanie-open {
+            margin: 0;
+            padding: 0;
+        }
+
+        .meanie img,
+        .meanie-open img {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* clickable images (direct children only, so the body image isn't affected) */
+        .meanie img,
+        .meanie-open>img:first-child {
+            cursor: pointer;
+        }
+
+        /* =====================================================================
+           THE DROP ANIMATION  (this is the part that controls everything)
+
+           .meanie-body-inner is always as tall as the full body image,
+           because it contains an invisible copy of that image (.body-sizer)
+           which only exists to hold the space.
+
+           The visible artwork (.body-art) is absolutely positioned on top and
+           is SQUASHED, not clipped: its height animates from --start (50px)
+           to 100% of the box, stretching the whole image to fit. Its width
+           never changes.
+
+           .meanie-bottom (meanie-bottom.png) is animated with the SAME
+           duration and easing. Its top edge always sits at the bottom of
+           the squashed image:
+               image height at progress f:  50px + f * (100% - 50px)
+               bottom image top at f:       50px + f * (100% - 50px)
+           ...so the two can never drift apart.
+           ===================================================================== */
+        .meanie-body {
+            position: relative;
+        }
+
+        .meanie-body-inner {
+            position: relative;
+        }
+
+        .meanie-open .meanie-bottom {
+            position: absolute;
+            left: 0;
+            top: calc(100% - var(--seam));
+            /* resting position: right under the body */
+        }
+
+        /* timing knobs */
+        .meanie-wrap {
+            --open-time: 2.2s;
+            /* whole open animation: fast drop + elastic settle, in ONE smooth motion */
+            --close-time: 0.6s;
+            /* closing animation */
+            --seam: 1px;
+            /* tiny overlap so no hairline shows between the images */
+            --start: 50px;
+            /* height of the squashed body at the start / end */
+
+            /* Open easing: one continuous curve. It drops fast, overshoots full
+               height by ~5%, then wobbles and settles. Because it is a single
+               curve (not two animations stitched together) there is no kink.
+               The cubic-bezier line is a fallback for browsers without linear(). */
+            --open-ease: cubic-bezier(0.1, 0.9, 0.25, 1.1);
+            --open-ease: linear(0, 0.0621, 0.1225, 0.1813, 0.2385, 0.2941, 0.3481, 0.4005, 0.4513, 0.5004, 0.5479, 0.5939, 0.6382, 0.6809, 0.722, 0.7614, 0.7993, 0.8355, 0.8702, 0.9032, 0.9346, 0.9644, 0.9926, 1.0181, 1.0371, 1.0483, 1.0517, 1.0482, 1.0395, 1.0274, 1.0141, 1.0013, 0.9906, 0.9829, 0.9785, 0.9776, 0.9795, 0.9836, 0.989, 0.9948, 1.0003, 1.0047, 1.0079, 1.0095, 1.0097, 1.0087, 1.0068, 1.0044, 1.0019, 0.9995, 0.9977, 0.9964, 0.9958, 0.9958, 0.9963, 0.9972, 0.9983, 0.9994, 1.0003, 1.0011, 1.0016, 1.0018, 1.0018, 1.0015, 1.0011, 1.0007, 1.0002, 0.9998, 0.9995, 0.9993, 1);
+
+            /* Close easing: the open drop's curve run backwards (slow start, fast finish) */
+            --close-ease: cubic-bezier(0.75, 0, 0.9, 0.1);
+        }
+
+        .meanie-open .body-sizer {
+            visibility: hidden;
+            /* holds the full-height space only */
+        }
+
+        .meanie-open .body-art {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* resting state: full size, undistorted */
+        }
+
+        /* ---------- OPEN ---------- */
+        .meanie-wrap.is-open .body-art {
+            animation: bodyStretch var(--open-time) var(--open-ease) both;
+        }
+
+        .meanie-wrap.is-open .meanie-bottom {
+            animation: bottomFollow var(--open-time) var(--open-ease) both;
+        }
+
+        /* The easing curve overshoots past 1, so these briefly go a little
+           beyond 100% (the image stretches slightly taller than its box and
+           the bottom image rides along with it) before springing back. */
+        @keyframes bodyStretch {
+            from {
+                height: var(--start);
+            }
+
+            /* very short, distorted */
+            to {
+                height: 100%;
+            }
+
+            /* natural proportions */
+        }
+
+        @keyframes bottomFollow {
+            from {
+                top: calc(var(--start) - var(--seam));
+            }
+
+            to {
+                top: calc(100% - var(--seam));
+            }
+        }
+
+        /* text box appears once the wobble has mostly settled */
+        .meanie-text {
+            position: absolute;
+            inset: 0;
+            box-sizing: border-box;
+            padding: 5px 20px;
+            /* the "window" inside the artwork; adjust to fit your body image */
+        }
+
+        .meanie-wrap.is-open .meanie-text {
+            animation: textIn 0.5s ease-out calc(var(--open-time) * 0.55) both;
+        }
+
+        @keyframes textIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------- CLOSE (reverse) ----------
+           The script adds .is-closing. The text fades out first, then the body
+           squashes back up to --start while the bottom image rides up with it,
+           using the same formula as the open animation, just running the
+           other way. When the bottom image's animation ends, the script removes
+           .is-open and .is-closing, which swaps back to the closed graphic. */
+        .meanie-wrap.is-open.is-closing .meanie-text {
+            animation: textOut 0.2s ease-in both;
+        }
+
+        .meanie-wrap.is-open.is-closing .body-art {
+            animation: bodyCollapse var(--close-time) var(--close-ease) 0.15s both;
+        }
+
+        .meanie-wrap.is-open.is-closing .meanie-bottom {
+            animation: bottomCollapse var(--close-time) var(--close-ease) 0.15s both;
+        }
+
+        @keyframes textOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes bodyCollapse {
+            from {
+                height: 100%;
+            }
+
+            to {
+                height: var(--start);
+            }
+        }
+
+        @keyframes bottomCollapse {
+            from {
+                top: calc(100% - var(--seam));
+            }
+
+            to {
+                top: calc(var(--start) - var(--seam));
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .meanie-wrap.is-open .body-art,
+            .meanie-wrap.is-open .meanie-bottom,
+            .meanie-wrap.is-open .meanie-text,
+            .meanie-wrap.is-open.is-closing .body-art,
+            .meanie-wrap.is-open.is-closing .meanie-bottom,
+            .meanie-wrap.is-open.is-closing .meanie-text {
+                animation: none;
+            }
+        }
+
+        .meanie-scroll {
+            width: 75%;
+            margin: 0px auto;
+            height: 100%;
+            /* fills the window, so overflow triggers the scrollbar */
+            overflow-y: auto;
+            padding-right: 0px;
+            /* gap between the text and the scrollbar */
+            box-sizing: border-box;
+            overscroll-behavior: contain;
+            /* scrolling the text doesn't scroll the page at its ends */
+
+            font: 14px/1.5 sans-serif;
+            text-align: left;
+            color: #fff;
+
+            /* slim scrollbar (Firefox + modern Chrome/Safari) */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+        }
+
+        .meanie-scroll h1 {
+            margin: 0;
+            margin: 20px;
+            font-size: 3.2em;
+            font-family: "Lacquer", system-ui;
+            font-weight: 400;
+            line-height: 1em;
+            font-style: normal;
+            text-align: center;
+        }
+
+        .meanie-scroll p {
+            margin: 0;
+            margin: 20px;
+            font-size: 1.4em;
+        }
+
+
+        @media screen and (max-width: 768px) {
+                .meanie-scroll h1 {    font-size: 2em; }
+                .meanie-scroll p { font-size: 1em;  }
+        }
+
+        .meanie-scroll p.callout {
+            margin: 0;
+            margin: 20px;
+            font-size: 2em;
+            line-height: 1.2em;
+
+        }
+
+        .meanie-scroll p.callout2 {
+            font-size: 1em;
+            width: 80%;
+            margin: 10px auto;
+        }
+
+
+        .meanie-scroll .inNene {
+            width: 50%;
+            margin: auto;
+            border:3px solid  rgb(39, 191, 79);
+        }
+
+        @media screen and (max-width: 768px) {
+            .meanie-scroll .inNene {  width: 90%;  }
+        }
+
+
+        .meanie-scroll a:link {
+            color:  rgb(39, 191, 79);
+        }
+
+        /* WebKit fallback for older browsers */
+        .meanie-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .meanie-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .meanie-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 3px;
+        }
+
+        /* state: closed (default) */
+        .meanie-open {
+            display: none;
+        }
+
+        /* state: open */
+        .meanie-wrap.is-open .meanie {
+            display: none;
+        }
+
+        .meanie-wrap.is-open .meanie-open {
+            display: block;
+        }
+
+
+        .city { font-weight: bold; text-align:center;    font-family: "Lacquer", system-ui; color:  rgb(247, 247, 247);}
