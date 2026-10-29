@@ -1,44 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUPPETS RISING</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Londrina+Shadow&display=swap" rel="stylesheet">
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: #ffffff;
-    overflow: hidden;
-  }
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Puppets Rising</title>
+    <meta name="description" content="For accuracy in the recounting of a tale, some characters must be larger than life. ">
 
-  body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
 
-  h1 {
-    font-family: 'Londrina Shadow', sans-serif;
-    color: #000000;
-    margin: 0;
-    padding: 0 1vw;
-    white-space: nowrap;
-    line-height: 0.85;
-    text-align: center;
-    /* Scale by whichever dimension is more constraining, so it fills
-       the window without overflowing in either orientation */
-    font-size: min(22vw, 30vh);
-  }
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="//cdn.fcim.org/sep/mapr/favicon/mstile-150x150.png" />
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lacquer&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/meanie.css">
+
+    <style>
+
+    </style>
 </head>
+
 <body>
-  <h1>PUPPETS<br>RISING</h1>
+
+    <div class="meanie-wrap">
+        <div class="meanie">
+            <img src="img/meanie.png" alt="Open the Meanie" tabindex="0" role="button" />
+        </div>
+
+        <div class="meanie-open">
+            <img src="img/meanie-head.png" alt="Close the Meanie" tabindex="0" role="button" />
+
+            <div class="meanie-drop">
+                <div class="meanie-body">
+                    <div class="meanie-body-inner">
+                        <img class="body-sizer" src="img/meanie-body.png" alt="" aria-hidden="true" />
+                        <img class="body-art" src="img/meanie-body.png" alt="" />
+                        <div class="meanie-text">
+                            <div class="meanie-scroll" tabindex="0">
+
+                                <h1>Welcome to the show! </h1>
+
+                                <img class="inNene" src="img/flagpole.GIF" />
+
+                                <p class="center"><a href="mailto:puppets-rising@proton.me">puppets-rising@proton.me</a></p>
+<p class="city">Tallahassee, FL</p>
+                            </div>
+                        </div>
+                    </div>
+                    <img class="meanie-bottom" src="img/meanie-bottom.png" alt="" />
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        (function () {
+            var wrap = document.querySelector('.meanie-wrap');
+            var openTrigger = wrap.querySelector('.meanie img');
+            var closeTrigger = wrap.querySelector('.meanie-open > img:first-child');
+            var bottom = wrap.querySelector('.meanie-bottom');
+
+            function open() {
+                wrap.classList.remove('is-closing');
+                wrap.classList.add('is-open');
+            }
+
+            function finishClose() {
+                wrap.classList.remove('is-open', 'is-closing');
+            }
+
+            function close() {
+                if (!wrap.classList.contains('is-open') || wrap.classList.contains('is-closing')) return;
+                wrap.classList.add('is-closing');
+                // no animation running (e.g. reduced motion): close straight away
+                if (getComputedStyle(bottom).animationName === 'none') finishClose();
+            }
+
+            // when the closing animation of the bottom image ends, swap to the closed graphic
+            bottom.addEventListener('animationend', function (e) {
+                if (e.animationName === 'bottomCollapse') finishClose();
+            });
+
+            function bind(el, action) {
+                el.addEventListener('click', action);
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        action();
+                    }
+                });
+            }
+
+            bind(openTrigger, open);
+            bind(closeTrigger, close);
+        })();
+    </script>
+
 </body>
+
 </html>
