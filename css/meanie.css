@@ -9,9 +9,14 @@
         }
 
         .center { text-align:center; margin:auto;}
+
+
         .meanie-wrap {
-            width: 60%;
+            width: 50%;
             margin: 0 auto;
+        }
+        @media screen and (max-width: 768px) {
+               .meanie-wrap { border:1px solid red;  width: 100%; }
         }
 
         .meanie,
@@ -264,6 +269,12 @@
             font-size: 1.4em;
         }
 
+
+        @media screen and (max-width: 768px) {
+                .meanie-scroll h1 {    font-size: 2em; }
+                .meanie-scroll p { font-size: 1em;  }
+        }
+
         .meanie-scroll p.callout {
             margin: 0;
             margin: 20px;
@@ -284,6 +295,11 @@
             margin: auto;
             border:3px solid  rgb(39, 191, 79);
         }
+
+        @media screen and (max-width: 768px) {
+            .meanie-scroll .inNene {  width: 90%;  }
+        }
+
 
         .meanie-scroll a:link {
             color:  rgb(39, 191, 79);
